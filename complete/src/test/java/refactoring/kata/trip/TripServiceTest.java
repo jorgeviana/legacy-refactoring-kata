@@ -8,12 +8,16 @@ import refactoring.kata.user.User;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static refactoring.kata.user.UserBuilder.aUser;
 
 public class TripServiceTest {
 
     private static final User GUEST = null;
     private static final User UNUSED_USER = null;
     private static final User REGISTERED_USER = new User();
+    private static final User SOME_OTHER_USER = new User();
+
+    private static final Trip MADAGASCAR = new Trip();
 
     private User loggedInUser;
 
@@ -34,27 +38,40 @@ public class TripServiceTest {
     @Test public void
     should_not_show_any_trips_when_users_are_not_friends() throws UserNotLoggedInException {
         loggedInUser = REGISTERED_USER;
-        User otherUser = aUserWithTripsButNotFriendsWith(loggedInUser);
+
+        User otherUser = aUser()
+                .withFriends(SOME_OTHER_USER)
+                .withTrips(MADAGASCAR)
+                .build();
 
         List<Trip> otherUserTrips = tripService.getTripsByUser(otherUser);
 
         assertThat(otherUserTrips).isEmpty();
     }
 
-    private User aUserWithTripsButNotFriendsWith(User user) {
-        User otherUser = new User();
-        otherUser.addTrip(new Trip());
+    @Test public void
+    should_show_the_trips_of_a_friend() throws UserNotLoggedInException {
+        loggedInUser = REGISTERED_USER;
 
-        assertThat(otherUser.trips()).isNotEmpty();
-        assertThat(otherUser.getFriends()).doesNotContain(user);
+        User friend = aUser()
+                .withFriends(loggedInUser)
+                .withTrips(MADAGASCAR)
+                .build();
 
-        return otherUser;
+        List<Trip> friendTrips = tripService.getTripsByUser(friend);
+
+        assertThat(friendTrips).contains(MADAGASCAR);
     }
 
     private class TestableTripService extends TripService {
         @Override
         protected User getLoggedInUser() {
             return loggedInUser;
+        }
+
+        @Override
+        protected List<Trip> findTripsByUser(User user) {
+            return user.trips();
         }
     }
 }
