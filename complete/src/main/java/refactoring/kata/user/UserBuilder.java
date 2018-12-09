@@ -30,12 +30,16 @@ public class UserBuilder {
     }
 
     private void addTrips(User user, Trip... trips) {
+        if (trips == null) return;
+
         for (Trip trip : trips) {
             user.addTrip(trip);
         }
     }
 
     private void addFriends(User user, User[] friends) {
+        if (friends == null) return;
+
         for(User friend : friends) {
             user.addFriend(friend);
         }
