@@ -4,30 +4,38 @@ import refactoring.kata.exception.UserNotLoggedInException;
 import refactoring.kata.user.User;
 import refactoring.kata.user.UserSession;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Collections.EMPTY_LIST;
 
 public class TripService {
 
-	public List<Trip> getTripsByUser(User user) throws UserNotLoggedInException {
-		List<Trip> tripList = new ArrayList<>();
-		User loggedUser = getLoggedInUser();
+    private static final User GUEST = null;
 
-		if (loggedUser != null) {
-			if (user.isFriendsWith(loggedUser)) {
-				tripList = findTripsByUser(user);
-			}
-			return tripList;
-		} else {
-			throw new UserNotLoggedInException();
-		}
-	}
+    public List<Trip> getTripsByUser(User user) throws UserNotLoggedInException {
 
-	protected User getLoggedInUser() {
-		return UserSession.getInstance().getLoggedUser();
-	}
+        checkUserIsLoggedIn();
 
-	protected List<Trip> findTripsByUser(User user) {
-		return TripDAO.findTripsByUser(user);
-	}
+        return user.isFriendsWith(loggedInUser()) ?
+                tripsBy(user) :
+                noTrips();
+    }
+
+    private void checkUserIsLoggedIn() throws UserNotLoggedInException {
+        if (loggedInUser() == GUEST) {
+            throw new UserNotLoggedInException();
+        }
+    }
+
+    protected User loggedInUser() {
+        return UserSession.getInstance().getLoggedUser();
+    }
+
+    protected List<Trip> tripsBy(User user) {
+        return TripDAO.findTripsByUser(user);
+    }
+
+    private List noTrips() {
+        return EMPTY_LIST;
+    }
 }

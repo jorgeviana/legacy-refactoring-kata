@@ -65,12 +65,12 @@ public class TripServiceShould {
 
     private class TestableTripService extends TripService {
         @Override
-        protected User getLoggedInUser() {
+        protected User loggedInUser() {
             return loggedInUser;
         }
 
         @Override
-        protected List<Trip> findTripsByUser(User user) {
+        protected List<Trip> tripsBy(User user) {
             return user.trips();
         }
     }
