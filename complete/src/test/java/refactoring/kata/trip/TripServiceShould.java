@@ -10,7 +10,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static refactoring.kata.user.UserBuilder.aUser;
 
-public class TripServiceTest {
+public class TripServiceShould {
 
     private static final User GUEST = null;
     private static final User UNUSED_USER = null;
@@ -29,14 +29,14 @@ public class TripServiceTest {
     }
 
     @Test(expected = UserNotLoggedInException.class) public void
-    should_throw_an_exception_when_a_not_logged_in_user_tries_to_view_the_trips_of_any_other_user() throws UserNotLoggedInException {
+    throw_an_exception_when_a_not_logged_in_user_tries_to_view_the_trips_of_any_other_user() throws UserNotLoggedInException {
         loggedInUser = GUEST;
 
         tripService.getTripsByUser(UNUSED_USER);
     }
 
     @Test public void
-    should_not_show_any_trips_when_users_are_not_friends() throws UserNotLoggedInException {
+    not_show_any_trips_when_users_are_not_friends() throws UserNotLoggedInException {
         loggedInUser = REGISTERED_USER;
 
         User otherUser = aUser()
@@ -50,7 +50,7 @@ public class TripServiceTest {
     }
 
     @Test public void
-    should_show_the_trips_of_a_friend() throws UserNotLoggedInException {
+    show_the_trips_of_a_friend() throws UserNotLoggedInException {
         loggedInUser = REGISTERED_USER;
 
         User friend = aUser()
