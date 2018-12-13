@@ -12,6 +12,14 @@ public class TripService {
 
     private static final User GUEST = null;
 
+    private final UserSession userSession;
+    private final TripDAO tripDAO;
+
+    public TripService(UserSession userSession, TripDAO tripDAO) {
+        this.userSession = userSession;
+        this.tripDAO = tripDAO;
+    }
+
     public List<Trip> getTripsByUser(User user) throws UserNotLoggedInException {
 
         checkUserIsLoggedIn();
@@ -27,12 +35,12 @@ public class TripService {
         }
     }
 
-    protected User loggedInUser() {
-        return UserSession.getInstance().getLoggedUser();
+    private User loggedInUser() {
+        return userSession.getLoggedUser();
     }
 
-    protected List<Trip> tripsBy(User user) {
-        return TripDAO.findTripsByUser(user);
+    private List<Trip> tripsBy(User user) {
+        return tripDAO.tripsBy(user);
     }
 
     private List noTrips() {

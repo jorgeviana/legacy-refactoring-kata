@@ -11,4 +11,9 @@ public class TripDAO {
 		throw new DependendClassCallDuringUnitTestException(
 				"TripDAO should not be invoked on an unit test.");
 	}
+
+	public List<Trip> tripsBy(User user) {
+		throw new DependendClassCallDuringUnitTestException(
+				"TripDAO should not be invoked on an unit test.");
+	}
 }
